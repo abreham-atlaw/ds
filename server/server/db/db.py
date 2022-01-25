@@ -1,4 +1,5 @@
 import psycopg2 as pg
+import psycopg2.extras
 
 from server import Config
 
@@ -10,3 +11,5 @@ connection = pg.connect(
 	port=Config.DATABASE_PORT
 )
 read_cursor = connection.cursor()
+
+pg.extras.register_uuid()

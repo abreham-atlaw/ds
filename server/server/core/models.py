@@ -1,21 +1,40 @@
 from typing import *
 
 import uuid
-
 from datetime import datetime
 
-"""
-class Request:
+from server.db import Model, Serializable
+
+
+class Request(Model, Serializable):
 
 	__tablename__ = "core_request"
+	__columns__ = ("id", "command", "locked", "complete", "start_datetime", "value")
+	__pk__ = "id"
+	__serialized_fields__ = ("id", "command")
 
-	id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-	command = Column(String(), nullable=False)
-	locked = Column(Boolean(), default=False, nullable=False)
-	complete = Column(Boolean(), default=False, nullable=False)
-	start_datetime = Column(DateTime(), nullable=False, default=datetime.now)
+	def __init__(
+			self,
+			id=None,
+			command=None,
+			locked=False,
+			complete=False,
+			start_datetime=None,
+			value=None
+	):
+		self.id = id
+		self.command = command
+		self.locked = locked
+		self.complete = complete
+		self.start_datetime = start_datetime
+		self.value =value
 
+		if self.id is None:
+			self.id = uuid.uuid4()
 
-class Tokens(Model):
-	token = Column(UUID(), primary_key=True, default=uuid.uuid4)
-"""
+	@classmethod
+	def get_with_complete_and_locked(cls, complete, locked):
+		return cls.get_with_condition(
+			condition="complete = %s AND locked = %s",
+			args=(complete, locked)
+		)

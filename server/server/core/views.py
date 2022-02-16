@@ -60,11 +60,19 @@ class WorkerRequestView(RequestView):
 
 class QueenRequestView(AuthorizedRequestView):
 
+	def __serialize_request(self, request):
+		serialized = request.serialize()
+		serialized.update({
+			"complete": request.complete,
+			"value": request.value
+		})
+		return serialized
+
 	def handle_get(self):
 		id = flask_request.args.get("id")
 		if id is None:
-			return [request.serialize() for request in Request.get_all()]
-		return Request.get_with_pk(id).serialize()
+			 [self.__serialize_request(request) for request in Request.get_all()]
+		return self.__serialize_request(Request.get_with_pk(id))
 
 	def handle_post(self):
 		command = flask_request.json.get("command")

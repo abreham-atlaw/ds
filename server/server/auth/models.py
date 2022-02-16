@@ -15,4 +15,5 @@ class Token(Model):
 
 	@classmethod
 	def get_by_token(cls, token):
+		print(token)
 		return Token.get_with_condition("token = %s", (token,), single=True)

@@ -1,5 +1,4 @@
 
-
 class Serializable:
 
 	__serialized_fields__ = None
